@@ -1,9 +1,22 @@
-
+#containerShadow
+{
+    width: 100vw;
+    height: 100vh;
+    background-color: #808080;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
 #containerDiv
 {
-    width: 100vw;
-     height: 100vh; 
+    border: 6px solid black;
+    border-radius: 3px;
+    
+    
+    width: 240px;
+    height: 500px; 
     background-color: aliceblue;
     display: flex;
     flex-direction: column;
@@ -11,13 +24,10 @@
     justify-content: center;
 }
 
-#div1, #div2, #div3
+.buttondiv
 {
-    width: 100px;
-    /*height: 100px;*/
+    width: 100vw;
     background-color: aquamarine;
-    
-    
 }
 
 #containerok
@@ -25,10 +35,7 @@
     margin-top: auto;
 }
 
-
 #buttonok
 {
-    width: 50px;
-    /* height: 50px; */
-    
+    width: 50px;   
 }
