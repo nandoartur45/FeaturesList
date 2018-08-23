@@ -1,11 +1,30 @@
+/**
+ * Responsible for displaying selectable items.
+ * @module ItemsList
+ */
+
+/**
+ * Responsible for displaying selectable items.
+ * @param {string} containerDivId - The container that holds the items.
+ * @param {string} containerShadowId - The shadow background.  
+ * @param {string} okbuttonId - The ok button.
+ */
 class ItemsList extends Subject {
-    constructor(containerDivId, containerShadowId) {
+    constructor(containerDivId, containerShadowId, okbuttonId) {
         super();
 
         this._itemsArray = [];
         this.selectedItemsArray = [];
         this._container = $(`#${containerDivId}`);
         this._containerShadow = $(`#${containerShadowId}`);
+        this._okbuttonclick = $(`#${okbuttonId}`);
+
+        this._okbuttonclick.on("click", function() 
+        {
+            this.hide();
+            ItemsList.notify('okbuttonclick', this);
+
+        }.bind(this));
 
         ItemsList.on("selecteditemschanged", function () {
             this.redraw();
@@ -27,13 +46,19 @@ class ItemsList extends Subject {
         }.bind(this));
     }
 
-    //he will insert an item in a items vector
+    /**
+     * Adds an item to the itemsArray.
+     * @param {string} item - It represents the item's caption and id.
+    */
     addItem(item) {
         this.itemsArray.push(item);
         ItemsList.notify('itemsarraychanged', this);
     }
 
-    //he will remove an item from a items vector
+    /**
+     * Removes an item from the itemsArray.
+     * @param {string} item - The item's id.
+    */
     removeItem(item) {
         let index = this.itemsArray.indexOf(item);
         if (index === -1) {
@@ -44,10 +69,16 @@ class ItemsList extends Subject {
         ItemsList.notify('itemsarraychanged', this);
     }
 
+    /**
+     * Shows the shadowContainer and its contents.
+     */
     show() {
         this._containerShadow.show();
     }
 
+    /**
+     * Hides the shadowContainer and its contents.
+     */
     hide() {
         this._containerShadow.hide();
     }
@@ -56,6 +87,9 @@ class ItemsList extends Subject {
         return this._itemsArray;
     }
 
+    /**
+     * Redraws all the items based on itemsArray and selectecItemsArray.
+     */
     redraw() {
         this._container.empty();
         for (let i = 0; i < this.itemsArray.length; i++) {
@@ -69,6 +103,11 @@ class ItemsList extends Subject {
         }
     }
 
+    /**
+     * Adds an element with a label to the container.
+     * @private
+     * @param {string} item - The label.
+     */
     _createButton(item) {
         let newButton = $(document.createElement("button"));
         newButton.addClass("btn btn-outline-primary buttondiv");
@@ -77,40 +116,52 @@ class ItemsList extends Subject {
         return newButton;
     }
 
-    setItemActive(item) {
-        let index = this.itemsArray.indexOf(item)
+    /**
+     * Adds the "active" class to the item's id
+     * @param {string} itemId - The item's id.
+     */
+    setItemActive(itemId) {
+        let index = this.itemsArray.indexOf(itemId)
         if (index === -1) {
-            console.log(`Item Not Found: ${item}`);
+            console.log(`Item Not Found: ${itemId}`);
             return;
         }
 
-        let indexSelected = this.selectedItemsArray.indexOf(item)
+        let indexSelected = this.selectedItemsArray.indexOf(itemId)
         if (indexSelected !== -1) {
-            console.log(`Item Already Selected: ${item}`);
+            console.log(`Item Already Selected: ${itemId}`);
         }
-        this.selectedItemsArray.push(item);
+        this.selectedItemsArray.push(itemId);
         ItemsList.notify('selecteditemschanged', this);
     }
 
-    setItemInactive(item) {
-        let index = this.itemsArray.indexOf(item);
+    /**
+     * Removes the "active" class from the item's id
+     * @param {string} itemId 
+     */
+    setItemInactive(itemId) {
+        let index = this.itemsArray.indexOf(itemId);
         if (index === -1) {
-            console.log(`Item Not Found: ${item}`);
+            console.log(`Item Not Found: ${itemId}`);
             return;
         }
 
-        let indexSelected = this.selectedItemsArray.indexOf(item);
+        let indexSelected = this.selectedItemsArray.indexOf(itemId);
         if (indexSelected === -1) {
-            console.log(`Item Not Found: ${item}`);
+            console.log(`itemId Not Found: ${itemId}`);
         }
         this.selectedItemsArray.splice(indexSelected, 1);
         ItemsList.notify('selecteditemschanged', this);
     }
 
-    toggleItemActive(item) {
-        let index = this.itemsArray.indexOf(item);
+    /**
+     * Toggles (adds or removes) the "active" class from the item with the id "itemId"
+     * @param {string} itemId 
+     */
+    toggleItemActive(itemId) {
+        let index = this.itemsArray.indexOf(itemId);
         if (index === -1) {
-            console.log(`Item Not Found: ${item}`);
+            console.log(`itemId Not Found: ${itemId}`);
             return;
         }
 
@@ -125,17 +176,43 @@ class ItemsList extends Subject {
     }
 }
 
+
+/** 
+* Triggered when an item is added or removed from itemsArray.
+* @event module:ItemsList~ItemsList#itemsarraychanged
+* @type {ItemsList}
+* @property {ItemsList} itemsList - The items list instance.
+* @property {string[]} itemsList.itemsArray - Holds the items.
+* @property {string[]} itemsList.selectecItemsArray - Holds the selected items.
+*/
+/** 
+* Triggered when an item is added or removed from selectedItemsArray.
+* @event module:ItemsList~ItemsList#selecteditemschanged
+* @type {ItemsList}
+* @property {ItemsList} itemsList - The items list instance.
+* @property {string[]} itemsList.itemsArray - Holds the items.
+* @property {string[]} itemsList.selectecItemsArray - Holds the selected items.
+*/
+/** 
+* Triggered when the "ok" button is clicked.
+* @event module:ItemsList~ItemsList#okbuttonclick
+* @type {ItemsList}
+* @property {ItemsList} itemsList - The items list instance.
+* @property {string[]} itemsList.itemsArray - Holds the items.
+* @property {string[]} itemsList.selectecItemsArray - Holds the selected items.
+*/
 if (!ItemsList.init) {
     ItemsList.init = true;
     ItemsList.registerEventNames([
         'itemsarraychanged',
         'selecteditemschanged',
+        'okbuttonclick',
     ]);
 }
 
 console.log("Started!");
 
-let itemsList = new ItemsList("containerAddress", "containerShadow");
+let itemsList = new ItemsList("containerAddress", "containerShadow", "okbutton");
 itemsList.addItem("Rua X");
 itemsList.addItem("Avenida Y");
 itemsList.addItem("Travessa Z");
