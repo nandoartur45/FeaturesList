@@ -12,5 +12,6 @@
   },
   "author": "Me",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {}
 }

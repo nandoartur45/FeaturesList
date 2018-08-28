@@ -13,6 +13,10 @@ class ItemsList extends Subject {
     constructor(containerDivId, containerShadowId, okbuttonId) {
         super();
 
+        /** Acrescentar os Ifs para todas as situações onde os parâmetros da classe sejam nulos,
+         *  também para as funções que não devem ser chamadas no caso de seu conteúdo ser nulo
+         *  (enquanto não estão preparadas para lidar com esse valor) */
+
         this._itemsArray = [];
         this.selectedItemsArray = [];
         this._container = $(`#${containerDivId}`);
