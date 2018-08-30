@@ -13,10 +13,6 @@ class ItemsList extends Subject {
     constructor(containerDivId, containerShadowId, okbuttonId) {
         super();
 
-        /** Acrescentar os Ifs para todas as situações onde os parâmetros da classe sejam undefined,
-         *  também para as funções que não devem ser chamadas no caso de seu conteúdo ser undefined
-         *  (enquanto não estão preparadas para lidar com esse valor) */
-
         this._itemsArray = [];
         this.selectedItemsArray = [];
 
@@ -184,9 +180,9 @@ class ItemsList extends Subject {
             return;
         }
 
-        let indexSelected = this.selectedItemsArray.indexOf(item);
+        let indexSelected = this.selectedItemsArray.indexOf(itemId);
         if (indexSelected === -1) {
-            this.selectedItemsArray.push(item);
+            this.selectedItemsArray.push(itemId);
         }
         else {
             this.selectedItemsArray.splice(indexSelected, 1);
