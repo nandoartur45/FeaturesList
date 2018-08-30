@@ -13,22 +13,30 @@ class ItemsList extends Subject {
     constructor(containerDivId, containerShadowId, okbuttonId) {
         super();
 
-        /** Acrescentar os Ifs para todas as situações onde os parâmetros da classe sejam nulos,
-         *  também para as funções que não devem ser chamadas no caso de seu conteúdo ser nulo
+        /** Acrescentar os Ifs para todas as situações onde os parâmetros da classe sejam undefined,
+         *  também para as funções que não devem ser chamadas no caso de seu conteúdo ser undefined
          *  (enquanto não estão preparadas para lidar com esse valor) */
 
         this._itemsArray = [];
         this.selectedItemsArray = [];
-        this._container = $(`#${containerDivId}`);
-        this._containerShadow = $(`#${containerShadowId}`);
-        this._okbuttonclick = $(`#${okbuttonId}`);
 
-        this._okbuttonclick.on("click", function() 
-        {
-            this.hide();
-            ItemsList.notify('okbuttonclick', this);
+        if (containerDivId) {
+            this._container = $(`#${containerDivId}`);
+        }
 
-        }.bind(this));
+        if (containerShadowId) {
+            this._containerShadow = $(`#${containerShadowId}`);
+        }
+
+        if (okbuttonId) {
+            this._okbuttonclick = $(`#${okbuttonId}`);
+
+            this._okbuttonclick.on("click", function () {
+                this.hide();
+                ItemsList.notify('okbuttonclick', this);
+
+            }.bind(this));
+        }
 
         ItemsList.on("selecteditemschanged", function () {
             this.redraw();
@@ -73,19 +81,25 @@ class ItemsList extends Subject {
         ItemsList.notify('itemsarraychanged', this);
     }
 
+
     /**
      * Shows the shadowContainer and its contents.
      */
     show() {
-        this._containerShadow.show();
+        if (this._containerShadow) {
+            this._containerShadow.show();
+        }
     }
 
     /**
      * Hides the shadowContainer and its contents.
      */
     hide() {
-        this._containerShadow.hide();
+        if (this._containerShadow) {
+            this._containerShadow.hide();
+        }
     }
+
 
     get itemsArray() {
         return this._itemsArray;
@@ -95,15 +109,16 @@ class ItemsList extends Subject {
      * Redraws all the items based on itemsArray and selectecItemsArray.
      */
     redraw() {
-        this._container.empty();
-        for (let i = 0; i < this.itemsArray.length; i++) {
-            let item = this.itemsArray[i];
-            let newButton = this._createButton(item);
-            if(this.selectedItemsArray.indexOf(item) !== -1)
-            {
-                newButton.addClass("active");
+        if (this._container) {
+            this._container.empty();
+            for (let i = 0; i < this.itemsArray.length; i++) {
+                let item = this.itemsArray[i];
+                let newButton = this._createButton(item);
+                if (this.selectedItemsArray.indexOf(item) !== -1) {
+                    newButton.addClass("active");
+                }
+                this._container.append(newButton);
             }
-            this._container.append(newButton);
         }
     }
 
@@ -116,7 +131,7 @@ class ItemsList extends Subject {
         let newButton = $(document.createElement("button"));
         newButton.addClass("btn btn-outline-primary buttondiv");
         newButton.html(item);
-        newButton.on("click", function()  {this.toggleItemActive(item);}.bind(this));
+        newButton.on("click", function () { this.toggleItemActive(item); }.bind(this));
         return newButton;
     }
 
