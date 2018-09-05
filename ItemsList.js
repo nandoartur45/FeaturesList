@@ -58,7 +58,13 @@ class ItemsList extends Subject {
      * Adds an item to the itemsArray.
      * @param {string} item - It represents the item's caption and id.
     */
-    addItem(item) {
+    addItem(id, label) {
+        let item = { "id": id, "label": label };
+        let index = this.itemsArray.findIndex((p) => p.id === item.id);
+        if (index !== -1) {
+            console.error(`Duplicated id (${id}) found!`)
+            return;
+        }
         this.itemsArray.push(item);
         ItemsList.notify('itemsarraychanged', this);
     }
@@ -67,10 +73,10 @@ class ItemsList extends Subject {
      * Removes an item from the itemsArray.
      * @param {string} item - The item's id.
     */
-    removeItem(item) {
-        let index = this.itemsArray.indexOf(item);
+    removeItem(id) {
+        let index = this.itemsArray.findIndex((p) => p.id === id);
         if (index === -1) {
-            console.error(`Item Not Found: ${item}`);
+            console.error(`Item Not Found: ${id}`);
             return;
         }
         this.itemsArray.splice(index, 1);
