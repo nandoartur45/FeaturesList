@@ -1,7 +1,8 @@
 class FeaturesList extends ItemsList {
     constructor() {
-        let addressesDiv = $(document.createElement("div"));
-        super(addressesDiv);
+        super();
+        
+        this._container = $(document.createElement("div"));
 
         this._outerContainer = $(document.createElement("div"));
         this._outerContainer.addClass("containerAddress");
